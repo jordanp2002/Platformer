@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float moveSpeed = 5f;
-    public float jumpForce = 7f;
+    public float moveSpeed = 4f;
+    public float jumpForce = 8f;
     public Transform cameraTransform;
 
     private Rigidbody rb;
