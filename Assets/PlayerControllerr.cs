@@ -9,7 +9,6 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
     private bool isGrounded;
  
-
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -32,7 +31,14 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.D)) moveX += 1;
 
         Vector3 moveDirection = cameraTransform.forward * moveZ + cameraTransform.right * moveX;
-        moveDirection.y = 0; 
+        moveDirection.y = 0;
+
+
+        // Snapping Player to moving direction so they don't look straight the whole time
+        if (moveDirection != Vector3.zero)
+        {
+            transform.forward = moveDirection; 
+        }
 
         rb.linearVelocity = new Vector3(moveDirection.x * moveSpeed, rb.linearVelocity.y, moveDirection.z * moveSpeed);
     }
@@ -40,16 +46,29 @@ public class PlayerController : MonoBehaviour
     void Jump()
     {
         if (isGrounded && Input.GetKeyDown(KeyCode.Space))
-        {
+        {   
+            //check if they are on the ground if they are allow the jump to happen
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);
             isGrounded = false;
         }
     }
-    void OnCollisionEnter(Collision collision)
+    void OnCollisionEnter(Collision Ground)
+
+        //check for ground collision
     {
-        if (collision.gameObject.CompareTag("Ground"))
+        if (Ground.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
+        }
+    }
+    void OnTriggerEnter(Collider Coin)
+    {
+
+        //if Coin is triggered by player colliding, incremement score and remove the coin
+        if (Coin.CompareTag("Coin"))
+        {
+            FindFirstObjectByType <Score>().AddScore(); 
+            Destroy(Coin.gameObject); 
         }
     }
 }
