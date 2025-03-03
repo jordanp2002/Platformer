@@ -7,7 +7,8 @@ public class Score : MonoBehaviour
     private int score = 0;
 
     public void AddScore()
-    {
+    {   
+        //increment score
         score++;
         scoreText.text = "Score: " + score;
     }

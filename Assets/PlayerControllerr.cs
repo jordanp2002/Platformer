@@ -5,20 +5,18 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed = 4f;
     public float jumpForce = 8f;
     public Transform cameraTransform;
-
     private Rigidbody rb;
     private bool isGrounded;
- 
+    private int jumpCount = 0;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
     }
-
     void Update()
     {
         Move();
         Jump();
-
     }
     void Move()
     {
@@ -34,31 +32,31 @@ public class PlayerController : MonoBehaviour
         moveDirection.y = 0;
 
 
-        // Snapping Player to moving direction so they don't look straight the whole time
+        // Snapping Player to moving direction so model don't look straight the whole time
         if (moveDirection != Vector3.zero)
         {
             transform.forward = moveDirection; 
         }
-
         rb.linearVelocity = new Vector3(moveDirection.x * moveSpeed, rb.linearVelocity.y, moveDirection.z * moveSpeed);
     }
 
     void Jump()
     {
-        if (isGrounded && Input.GetKeyDown(KeyCode.Space))
-        {   
-            //check if they are on the ground if they are allow the jump to happen
+        if (Input.GetKeyDown(KeyCode.Space) && jumpCount < 2) 
+        {
+            //check for two jumps, if over 2 don't jump anymore
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);
-            isGrounded = false;
+            jumpCount++; 
         }
     }
-    void OnCollisionEnter(Collision Ground)
 
-        //check for ground collision
+    void OnCollisionEnter(Collision Ground)
     {
         if (Ground.gameObject.CompareTag("Ground"))
-        {
+        {   
+            //reset jumpcount when hitting ground
             isGrounded = true;
+            jumpCount = 0;
         }
     }
     void OnTriggerEnter(Collider Coin)
